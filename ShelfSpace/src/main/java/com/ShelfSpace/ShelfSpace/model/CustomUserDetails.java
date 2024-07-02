@@ -10,6 +10,10 @@ import lombok.Data;
 @Data
 public class CustomUserDetails implements UserDetails {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private final String email;
 	private final String password;
 	private final Collection<? extends GrantedAuthority> authorities;
