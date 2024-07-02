@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>SelfShift - The Library System All You Need</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            background-color: black;
+            color: white;
+        }
+        .navbar {
+            
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem 2rem;
+            position: fixed;
+            width: 100%;
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            margin: 0 1rem;
+        }
+        .navbar a:hover {
+            color: #ccc;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height:100vh;
+            text-align: center;
+        }
+        h1 {
+            font-size: 4rem;
+            margin: 0;
+            word-spacing: 3px;
+            letter-spacing: 5px;
+        }
+        p {
+            font-size: 1.2rem;
+            margin: 0.5rem 0 0 0;
+            color: #ccc;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="#" th:href="@{/}">Home</a>
+        <a href="#" th:href="@{/about}">About</a>
+        <a href="#" th:href="@{/}">Books Issued</a>
+        <a href="/LoginPage" th:href="@{/LoginPage}">Register</a>
+    </nav>
+    <div class="container">
+        <h1>SHELF SHIFT</h1>
+        <p>The Library Manager All You Need</p>
+    </div>
+</body>
+</html>
