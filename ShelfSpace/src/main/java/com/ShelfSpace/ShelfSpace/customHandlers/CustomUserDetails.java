@@ -1,4 +1,4 @@
-package com.ShelfSpace.ShelfSpace.model;
+package com.ShelfSpace.ShelfSpace.customHandlers;
 
 import java.util.Collection;
 

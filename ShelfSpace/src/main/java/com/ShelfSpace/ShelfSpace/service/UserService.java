@@ -1,12 +1,12 @@
 package com.ShelfSpace.ShelfSpace.service;
 
 import java.util.List;
+import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.ShelfSpace.ShelfSpace.UserDao.UserInfoDao;
+import com.ShelfSpace.ShelfSpace.customHandlers.MyPasswordEncoder;
 import com.ShelfSpace.ShelfSpace.model.User;
 import com.ShelfSpace.ShelfSpace.model.UserRole;
 import com.ShelfSpace.ShelfSpace.repository.RoleRepository;
@@ -19,21 +19,28 @@ public class UserService implements UserInfoDao {
 
 	private UserRepository userRepository;
 	private RoleRepository roleRepository;
-	private PasswordEncoder passwordEncoder;
+	private MyPasswordEncoder passwordEncoder;
 
-	@Autowired
-	public UserService(UserRepository userRepository, RoleRepository roleRepository) {
+	public UserService(UserRepository userRepository, RoleRepository roleRepository,
+			MyPasswordEncoder passwordEncoder) {
 		this.userRepository = userRepository;
 		this.roleRepository = roleRepository;
+		this.passwordEncoder = passwordEncoder;
 	}
 
 	@Transactional
 	@Override
 	public User addUser(User user) {
+
+		Optional<User> userEmail = userRepository.findByEmail(user.getEmail());
+		if (userEmail.isPresent()) {
+			throw new RuntimeException("A user with this email already exists");
+		}
+
 		if (user.getRoles() == null || user.getRoles().isEmpty()) {
 			List<UserRole> roles = roleRepository.findByRoleName("USER");
 			user.setRoles(roles);
-			user.setPassword(passwordEncoder.encode(user.getPassword()));
+			user.setPassword(passwordEncoder.getPasswordEncoder().encode(user.getPassword()));
 
 		}
 
@@ -41,8 +48,7 @@ public class UserService implements UserInfoDao {
 			userRole.setRegisteredUser(List.of(user));
 		});
 
-		userRepository.save(user);
-		return user;
+		return userRepository.save(user);
 	}
 
 

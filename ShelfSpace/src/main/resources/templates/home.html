@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org "
+ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+
 <head>
     <meta charset="UTF-8">
     <title>SelfShift - The Library System All You Need</title>
@@ -8,7 +10,7 @@
         body {
             margin: 0;
             font-family: 'Roboto', sans-serif;
-            background-color: black;
+            background-color:rgba(255, 34, 148, 0.8);;
             color: white;
         }
         .navbar {
@@ -25,6 +27,7 @@
             text-decoration: none;
             padding: 0.5rem 1rem;
             margin: 0 1rem;
+            text-shadow: 3px 2px 0px rgba(0,0,0,1);
         }
         .navbar a:hover {
             color: #ccc;
@@ -42,24 +45,36 @@
             margin: 0;
             word-spacing: 3px;
             letter-spacing: 5px;
+            text-shadow: 3px 2px 0px rgba(0,0,0,1);
         }
         p {
             font-size: 1.2rem;
             margin: 0.5rem 0 0 0;
             color: #ccc;
+            text-shadow: 0px 0px 0px rgba(0,0,0,1);
         }
     </style>
 </head>
 <body>
     <nav class="navbar">
-        <a href="#" th:href="@{/}">Home</a>
-        <a href="#" th:href="@{/about}">About</a>
-        <a href="#" th:href="@{/}">Books Issued</a>
-        <a href="/LoginPage" th:href="@{/LoginPage}">Register</a>
+        <a th:href="@{/}">Home</a>
+        <a th:href="@{/about}">About</a>
+        <a th:href="@{/}">Books Issued</a>
+        
+        <span th:if="${isAuthenticated}">
+            <a th:href="@{/profile}">Profile</a>
+        </span>
+        <span th:if="${!isAuthenticated}">
+            <a th:href="@{/Login}">Login</a>
+        </span>
     </nav>
     <div class="container">
         <h1>SHELF SHIFT</h1>
         <p>The Library Manager All You Need</p>
+    </div>
+    
+    <div th:if = "${isAdmin}">
+    <h1>Hii Admin</h1>
     </div>
 </body>
 </html>

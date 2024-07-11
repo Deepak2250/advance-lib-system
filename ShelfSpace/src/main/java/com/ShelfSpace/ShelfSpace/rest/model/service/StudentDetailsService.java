@@ -3,12 +3,7 @@ package com.ShelfSpace.ShelfSpace.rest.model.service;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import javax.management.RuntimeErrorException;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.ShelfSpace.ShelfSpace.rest.model.BooksDetails;
@@ -16,7 +11,6 @@ import com.ShelfSpace.ShelfSpace.rest.model.StudentDetails;
 import com.ShelfSpace.ShelfSpace.rest.model.ServiceDao.ServiceDao;
 import com.ShelfSpace.ShelfSpace.rest.model.repository.BookDetailsRepository;
 import com.ShelfSpace.ShelfSpace.rest.model.repository.StudentDetailsRepository;
-import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 
 @Service
 public class StudentDetailsService implements ServiceDao {
@@ -124,6 +118,7 @@ public class StudentDetailsService implements ServiceDao {
 		}
 		return Optional.empty();
 	}
+	
 	
 	
 	
