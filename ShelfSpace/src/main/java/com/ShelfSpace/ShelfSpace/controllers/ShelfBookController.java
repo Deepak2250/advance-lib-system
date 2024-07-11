@@ -46,9 +46,8 @@ public class ShelfBookController {
 	@GetMapping("/Login")
 	public String loginPage(@RequestParam(value = "error", required = false) String error, Model model) {
 
-		 if (error != null) {
-	            if(error.isBlank()) error = "Empty";
-	            model.addAttribute("error", error); 
+		 if (error != null) { 
+	            model.addAttribute("error", "Email or Password is Incorrect"); 
 	        }
 	        return "login";
 	}
