@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org "
+ xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+
+<head>
+    <meta charset="UTF-8">
+    <title>SelfShift - The Library System All You Need</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap">
+    <link th:href="@{/css/home.css}" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <nav class="navbar">
+        <a th:href="@{/}">Home</a>
+        <a th:href="@{/about}">About</a>
+        <a th:href="@{/}">Books Issued</a>
+        
+        <span th:if="${isAuthenticated}">
+            <a th:href="@{/profile}">Profile</a>
+        </span>
+        <span th:if="${!isAuthenticated}">
+            <a th:href="@{/Login}">Login</a>
+        </span>
+    </nav>
+    <div class="container">
+        <h1>SHELF SHIFT</h1>
+        <p>The Library Manager All You Need</p>
+    </div>
+    
+    <div th:if = "${isAdmin}">
+    <h1>Hii Admin</h1>
+    </div>
+</body>
+</html>
