@@ -1,4 +1,4 @@
-package com.ShelfSpace.ShelfSpace.model;
+package com.ShelfSpace.ShelfSpace.entites;
 
 import java.util.List;
 
@@ -23,7 +23,7 @@ public class UserRole {
 	@Id
 	@Column(name = "role_id")
    @GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int roleId;
+	private Long roleId;
 	
 	 @Column(name = "role_name", nullable = false, unique = true)
 	private String roleName;

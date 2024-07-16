@@ -28,7 +28,7 @@ public class SecurityConfiguration {
     @Bean
     SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth.requestMatchers("/", "/signup" , "/processRegister" , "/Login").permitAll()
+                .authorizeHttpRequests(auth -> auth.requestMatchers("/", "/signup" , "/processRegister" , "/Login" , "/forgot-password/**" , "/css/emailVerification.css" , "/css/newpassword.css" , "css/home.css" , "/css/otpchecker.css" , "/css/signup.css" , "/css/login.css" , "js/otpchecker.js").permitAll()
                 .anyRequest().authenticated())
 
                 .formLogin(login -> login.loginPage("/Login")

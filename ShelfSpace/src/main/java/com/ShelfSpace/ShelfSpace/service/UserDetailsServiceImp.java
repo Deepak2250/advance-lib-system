@@ -12,7 +12,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import com.ShelfSpace.ShelfSpace.customHandlers.CustomUserDetails;
-import com.ShelfSpace.ShelfSpace.model.User;
+import com.ShelfSpace.ShelfSpace.entites.User;
 import com.ShelfSpace.ShelfSpace.repository.UserRepository;
 
 import jakarta.transaction.Transactional;

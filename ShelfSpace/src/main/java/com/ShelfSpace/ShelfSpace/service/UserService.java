@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 
 import com.ShelfSpace.ShelfSpace.UserDao.UserInfoDao;
 import com.ShelfSpace.ShelfSpace.customHandlers.MyPasswordEncoder;
-import com.ShelfSpace.ShelfSpace.model.User;
-import com.ShelfSpace.ShelfSpace.model.UserRole;
+import com.ShelfSpace.ShelfSpace.entites.User;
+import com.ShelfSpace.ShelfSpace.entites.UserRole;
 import com.ShelfSpace.ShelfSpace.repository.RoleRepository;
 import com.ShelfSpace.ShelfSpace.repository.UserRepository;
 

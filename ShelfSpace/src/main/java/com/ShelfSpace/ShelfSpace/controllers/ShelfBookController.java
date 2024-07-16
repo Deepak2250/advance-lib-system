@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.ShelfSpace.ShelfSpace.model.User;
+import com.ShelfSpace.ShelfSpace.entites.User;
 import com.ShelfSpace.ShelfSpace.model.UserInfo;
 import com.ShelfSpace.ShelfSpace.service.UserService;
 
@@ -47,7 +47,13 @@ public class ShelfBookController {
 	public String loginPage(@RequestParam(value = "error", required = false) String error, Model model) {
 
 		 if (error != null) { 
-	            model.addAttribute("error", "Email or Password is Incorrect"); 
+			 if (error.equals("email")) {
+	        	  model.addAttribute("error", "You Are Not Registered Yet"); 
+			}
+	          else if (error.equals("password")) {
+	        	  model.addAttribute("error", "Password is Incorrect"); 
+			}
+	          
 	        }
 	        return "login";
 	}

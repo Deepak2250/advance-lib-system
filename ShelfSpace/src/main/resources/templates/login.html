@@ -5,56 +5,15 @@
     <title>Login Page</title>
     <!-- Bootstrap CSS (example) -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <!-- Custom CSS for login page -->
-    <style>
-        body {
-            background-color: #f8f9fa;
-        }
-        .login-container {
-            max-width: 400px;
-            margin: auto;
-            padding: 20px;
-            background-color: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
-            margin-top: 100px;
-        }
-        .login-form {
-            margin-bottom: 20px;
-        }
-        .login-form input[type="email"], .login-form input[type="password"] {
-            width: 100%;
-            padding: 10px;
-            margin-top: 5px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        .login-form button[type="submit"] {
-            background-color: #28a745;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-            border-radius: 4px;
-        }
-        .login-form button[type="submit"]:hover {
-            background-color: #218838;
-        }
-        .error-message {
-            color: red;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-    </style>
+    <link th:href="@{/css/login.css}" rel="stylesheet" type="text/css" />
 </head>
 <body>
     <div class="container login-container">
-        <h2 class="text-center">Login</h2>
+        <h2 class="text-center">Sign In</h2>
         <div th:if="${error}" class="error-message">
             <p th:text="${error}"></p>
         </div>
-        <form th:action="@{/LoginPage}" method="post" class="login-form">
+        <form th:action="@{/login}" method="post" class="login-form">
             <div class="form-group">
                 <input type="email" name="email" class="form-control" placeholder="Email" required>
             </div>
@@ -63,7 +22,10 @@
             </div>
             <button type="submit" class="btn btn-success btn-block">Submit</button>
         </form>
-        <p class="text-center">Don't have an account? <a th:href="@{/signup}">Register</a></p>
+        <p class="forgot-password-link">
+            <a th:href="@{/forgot-password/email-Verification}">Forgot Password?</a>
+        </p>
+        <p class="text-center">Don't have an account? <a th:href="@{/css/signup}">Register</a></p>
     </div>
 </body>
 </html>

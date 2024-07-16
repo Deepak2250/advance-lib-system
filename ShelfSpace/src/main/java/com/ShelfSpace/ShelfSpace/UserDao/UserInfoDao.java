@@ -1,6 +1,6 @@
 package com.ShelfSpace.ShelfSpace.UserDao;
 
-import com.ShelfSpace.ShelfSpace.model.User;
+import com.ShelfSpace.ShelfSpace.entites.User;
 
 public interface UserInfoDao {
 
