@@ -1,14 +1,20 @@
 package com.ShelfSpace.ShelfSpace;
 
-	import org.springframework.boot.SpringApplication;
-	import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.web.client.RestTemplate;
 
-	@SpringBootApplication
-	public class SpaceShelfMain {
+@SpringBootApplication
+public class SpaceShelfMain {
 
-	    public static void main(String[] args) {
-	        SpringApplication.run(SpaceShelfMain.class, args);
-	    }
-	
+	public static void main(String[] args) {
+		SpringApplication.run(SpaceShelfMain.class, args);
+	}
+
+	@Bean
+	public RestTemplate restTemplate() {
+		return new RestTemplate();
+	}
 
 }

@@ -16,42 +16,57 @@ import com.ShelfSpace.ShelfSpace.customHandlers.MyPasswordEncoder;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
-	
-	 @Autowired
-	 private MyPasswordEncoder passwordEncoder;  //// For Converting the Encrypted Password to The String format
-	 @Autowired
-	 private UserDetailsService userDetailsService;; /// For fetching The user details from a custom source
 
-	 @Autowired
-	    private CustomAuthenticationHandler customAuthenticationHandler;
-	 
-    @Bean
-    SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth.requestMatchers("/", "/signup" , "/processRegister" , "/Login" , "/forgot-password/**" , "/css/emailVerification.css" , "/css/newpassword.css" , "css/home.css" , "/css/otpchecker.css" , "/css/signup.css" , "/css/login.css" , "js/otpchecker.js").permitAll()
-                .anyRequest().authenticated())
+        @Autowired
+        private MyPasswordEncoder passwordEncoder; //// For Converting the Encrypted Password to The String format
+        @Autowired
+        private UserDetailsService userDetailsService;; /// For fetching The user details from a custom source
 
-                .formLogin(login -> login.loginPage("/Login")
-                		.loginProcessingUrl("/LoginPage")
-                		.usernameParameter("email")
-                		.passwordParameter("password").failureHandler(customAuthenticationHandler)/// Also Added The Username Parameter as the Email and password Parameter is common is password
-                        .defaultSuccessUrl("/" , true).permitAll())
-				.logout(logout -> logout.logoutUrl("/logout")
-						.logoutSuccessHandler
-						(new CustomLogoutHandler())
-						.permitAll());
+        @Autowired
+        private CustomAuthenticationHandler customAuthenticationHandler;
 
-        return httpSecurity.build();
-    }
-    
-    //@Bean
-    //AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-    //     return authenticationConfiguration.getAuthenticationManager();
-    //}
-    
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder.getPasswordEncoder());
-    }
-     
+        @Bean
+        SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+                httpSecurity.csrf(csrf -> csrf.disable())
+                                .authorizeHttpRequests(auth -> auth
+                                                .requestMatchers("/", "/signup", "/processRegister", "/Login", "/login",
+                                                                "/forgot-password/**",
+                                                                "/css/emailVerification.css", "/css/newpassword.css",
+                                                                "css/home.css",
+                                                                "/css/otpchecker.css", "/css/signup.css",
+                                                                "/css/login.css", "/css/resetpassword.css",
+                                                                "/js/home.js",
+                                                                "/api/**", "/error", "/admin/**", "/output.css",
+                                                                "/input.css")
+                                                .permitAll()
+                                                .anyRequest().authenticated())
+
+                                .formLogin(login -> login.loginPage("/Login")
+                                                .loginProcessingUrl("/LoginPage")
+                                                .usernameParameter("email")
+                                                .passwordParameter("password")
+                                                .failureHandler(customAuthenticationHandler)/// Also Added The
+                                                                                            /// Username Parameter
+                                                                                            /// as the Email and
+                                                                                            /// password Parameter
+                                                                                            /// is common is
+                                                                                            /// password
+                                                .defaultSuccessUrl("/", true).permitAll())
+                                .logout(logout -> logout.logoutUrl("/logout")
+                                                .logoutSuccessHandler(new CustomLogoutHandler())
+                                                .permitAll());
+
+                return httpSecurity.build();
+        }
+
+        // @Bean
+        // AuthenticationManager authenticationManager(AuthenticationConfiguration
+        // authenticationConfiguration) throws Exception {
+        // return authenticationConfiguration.getAuthenticationManager();
+        // }
+
+        @Autowired
+        public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+                auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder.getPasswordEncoder());
+        }
 }

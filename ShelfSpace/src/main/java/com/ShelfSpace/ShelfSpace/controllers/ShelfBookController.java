@@ -2,6 +2,7 @@ package com.ShelfSpace.ShelfSpace.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.WebAttributes;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,7 +17,9 @@ import com.ShelfSpace.ShelfSpace.service.UserService;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Controller
 public class ShelfBookController {
 
@@ -44,14 +47,19 @@ public class ShelfBookController {
 	
 
 	@GetMapping("/Login")
-	public String loginPage(@RequestParam(value = "error", required = false) String error, Model model) {
+	public String loginPage(@RequestParam(value = "error", required = false) String error, Model model , HttpSession session) {
+		
+		log.warn("We entered in the /Login Enpoint ");
+		 session.removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
 
 		 if (error != null) { 
 			 if (error.equals("email")) {
-	        	  model.addAttribute("error", "You Are Not Registered Yet"); 
+	        	  model.addAttribute("error", "You Are Not Registered Yet");
+	        	  log.error("The error is Occured");
 			}
 	          else if (error.equals("password")) {
 	        	  model.addAttribute("error", "Password is Incorrect"); 
+	        	  log.error("The error is Occured");
 			}
 	          
 	        }

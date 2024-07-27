@@ -22,27 +22,21 @@ import lombok.Setter;
 @Setter
 public class User {
 
-	
 	@Column(name = "name", nullable = false)
 	private String name;
-	
+
 	@Id
 	@Column(name = "email", nullable = false, unique = true)
 	private String email;
-	
-	
+
 	@Column(name = "password", nullable = false)
 	private String password;
 
 	@ManyToMany
-	 @JoinTable(
-		        name = "user_info_user_roles",
-		        joinColumns = @JoinColumn(name = "user_info_email", referencedColumnName = "email"),
-		        inverseJoinColumns = @JoinColumn(name = "user_roles_id")
-		    )
+	@JoinTable(name = "registered_user_roles", joinColumns = @JoinColumn(name = "user_info_email", referencedColumnName = "email"), inverseJoinColumns = @JoinColumn(name = "user_roles_id"))
 	private List<UserRole> roles;
-	
-	@OneToOne(mappedBy = "user" , cascade = CascadeType.ALL , orphanRemoval = true)
+
+	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private ForgotPassword forgotPassword;
 
 	public User(String name, String email, String password) {
@@ -51,7 +45,5 @@ public class User {
 		this.email = email;
 		this.password = password;
 	}
-	
-	
 
 }

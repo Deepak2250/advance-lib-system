@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,11 +21,15 @@ import com.ShelfSpace.ShelfSpace.entites.ForgotPassword;
 import com.ShelfSpace.ShelfSpace.entites.User;
 import com.ShelfSpace.ShelfSpace.exception.EmailNotFound;
 import com.ShelfSpace.ShelfSpace.exception.OtpNotFoundExcpetion;
+import com.ShelfSpace.ShelfSpace.exception.PasswordNotCorrectException;
+import com.ShelfSpace.ShelfSpace.model.ResetPassword;
 import com.ShelfSpace.ShelfSpace.repository.ForgotPasswordRepository;
 import com.ShelfSpace.ShelfSpace.repository.UserRepository;
 import com.ShelfSpace.ShelfSpace.service.EmailService;
+import com.ShelfSpace.ShelfSpace.service.UserService;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 
 @Controller
 @RequestMapping("/forgot-password")
@@ -35,6 +41,8 @@ public class ForgotPasswordController {
 	private ForgotPasswordRepository forgotPasswordRepository;
 	@Autowired
 	private UserRepository userRepository;
+	@Autowired
+	private UserService userService;
 
 	private static final org.slf4j.Logger logger = LoggerFactory.getLogger(ForgotPasswordController.class);
 
@@ -166,6 +174,7 @@ public class ForgotPasswordController {
 				throw new OtpNotFoundExcpetion("Otp Expired");
 			}
 			logger.warn("The user is founded", user);
+			model.addAttribute("resetPassword", new ResetPassword());
 			return "resetpassword";
 
 		} 
@@ -186,10 +195,66 @@ public class ForgotPasswordController {
 		}
 	}
 
-	@PostMapping("/resetPassword")
-	public String resetPassword(HttpSession session) {
+	@PostMapping("/reset-password")
+	public String resetPassword( @Valid @ModelAttribute("resetPassword") ResetPassword resetPassword  , BindingResult result, HttpSession session , Model model) {
+		
+		logger.warn("Entered to the reset Password successfully ");
+		if (result.hasErrors()) {
+			logger.warn("The validation error occurs ");
+			return "resetpassword";
+		}
+		
+		try {
 		User user = (User) session.getAttribute("user");
-		userRepository.resetPassword(null, null)
+		if (userService.resetPassword(resetPassword, user)) {
+			MailBody mailBody = MailBody.builder()
+				    .to(user.getEmail())
+				    .subject("Password Changed Successfully")
+				    .text("Dear " + user.getName() + ",\n\n"
+				          + "We wanted to let you know that your password was changed successfully.\n\n"
+				          + "If you did not make this change, please contact our support team immediately.\n\n"
+				          + "Here are some tips to keep your account secure:\n"
+				          + "- Do not share your password with anyone.\n"
+				          + "- Use a unique password for every account.\n"
+				          + "- Change your password regularly.\n\n"
+				          + "If you have any questions, feel free to reach out to our support team.\n\n"
+				          + "Best regards,\n"
+				          + "DanixVerse\n"
+				          + "Support Team\n"
+				          + "danixverset@gmail.com")
+				    .build();
+
+			emailService.sendSimpleMessage(mailBody);
+			ForgotPassword forgotPassword = forgotPasswordRepository.findByUserObj(user); // Deleting the user and the otp token after the 
+			                                                                              // User Password is been Deleted;
+			Long forgotPasswordId = forgotPassword.getForgotpasswordId();
+			User userObj = forgotPassword.getUser();
+			userObj.setForgotPassword(null);
+			forgotPasswordRepository.deleteById(forgotPasswordId);
+			logger.info("The User otp token is been Removed");
+			
+			model.addAttribute("userName", user.getName());
+			logger.warn("The password has been changed successfully for user: {}", user.getEmail());
+            
+			return "success";
+		}
+		else {
+			logger.error("The error occured");
+			model.addAttribute("error","Both Passoword Are Different");
+			logger.error("The password hasnot been changed"  , user.getPassword());
+			return "resetpassword";
+		}
+		}
+		catch (NullPointerException e) {
+			logger.error("Null pointer exception" , e);
+			return "emailVerification";
+		}
+		catch (PasswordNotCorrectException e) {
+			logger.error("PasswordNotCorrectException " , e);
+			model.addAttribute("error","Both Passoword Are Different");
+			return "resetpassword";
+		}
+		
 	}
 	
 	private Integer otpGenerator() {
