@@ -9,12 +9,16 @@ import com.ShelfSpace.ShelfSpace.UserDao.UserInfoDao;
 import com.ShelfSpace.ShelfSpace.customHandlers.MyPasswordEncoder;
 import com.ShelfSpace.ShelfSpace.entites.User;
 import com.ShelfSpace.ShelfSpace.entites.UserRole;
+import com.ShelfSpace.ShelfSpace.exception.PasswordNotCorrectException;
+import com.ShelfSpace.ShelfSpace.model.ResetPassword;
 import com.ShelfSpace.ShelfSpace.repository.RoleRepository;
 import com.ShelfSpace.ShelfSpace.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 public class UserService implements UserInfoDao {
 
 	private UserRepository userRepository;
@@ -51,5 +55,21 @@ public class UserService implements UserInfoDao {
 		return userRepository.save(user);
 	}
 
+	@Override
+	public boolean resetPassword(ResetPassword resetPassword , User user) {
+		
+			if (resetPassword.getNewPassword().equals(resetPassword.getRepeatPassword())) {
+				log.warn("SuccessFully Both are good and same");
+				String encryptPassword = passwordEncoder.getPasswordEncoder().encode(resetPassword.getNewPassword());
+				userRepository.resetPassword( encryptPassword , user.getEmail());
+				log.warn("SuccessFully Changed the Password");
+				return true;
+			}
+			else {
+				log.error("The Password Not Correct Exception :" , resetPassword.getNewPassword());
+				throw new PasswordNotCorrectException("The Password You have Provided is not Valid");
+				
+			}
+	}
 
 }

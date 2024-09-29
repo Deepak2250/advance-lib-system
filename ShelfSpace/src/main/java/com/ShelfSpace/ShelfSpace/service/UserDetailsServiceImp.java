@@ -16,9 +16,11 @@ import com.ShelfSpace.ShelfSpace.entites.User;
 import com.ShelfSpace.ShelfSpace.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 
 
 @Service
+@Slf4j
 public class UserDetailsServiceImp implements UserDetailsService{
 
 	
@@ -32,12 +34,15 @@ public class UserDetailsServiceImp implements UserDetailsService{
 	               // we add the @Transactional Then the Transaction manager will handle it internally .. & ensures that a session is available when accessing lazy-loaded collections
 	               // Either we have to do like @OneToMany(Fetch.Type = Eager)
 	public UserDetails loadUserByUsername(String email) {
-		
+		log.warn("Entered in the LoadUsername ");
 		Optional<User> userDetails =  userRepository.findByEmail(email);
 		if (userDetails.isEmpty()) {
+			log.error("The user is not there ", email);
 			throw new RuntimeException("No User Found");
 		}
+		
 	
+		log.warn("The user with the email " , email , "hass been founded" );
 		 Collection<? extends GrantedAuthority> authorities = userDetails.get().getRoles().stream()
 				 .map(authRoles -> new SimpleGrantedAuthority(authRoles.getRoleName()))
 				 .collect(Collectors.toList());
