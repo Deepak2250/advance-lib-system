@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html
+  xmlns:th="http://www.thymeleaf.org "
+  xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Book Issued</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href="https://demos.creative-tim.com/notus-js/assets/styles/tailwind.css">
+    <link rel="stylesheet" href="https://demos.creative-tim.com/notus-js/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css">
+        <link rel="stylesheet" href="input.css" />
+        <link rel="stylesheet" href="output.css" />
+      </head>
+    <body class="bg-black">
+
+        <div class="w-full flex items-center justify-center mt-16">
+            <div class="title text-center">
+                <span class="text-3xl -mt-16 sm:text-4xl sm:-mt-20 md:text-5xl md:mt-0 lg:text-6xl font-extrabold bg-gradient-to-r from-slate-200 to-gray-400 bg-clip-text text-transparent"
+                id="title">
+                    BOOKS ISSUED
+                </span>
+            </div>
+        </div>
+        
+        <div class="relative w-full flex justify-center items-centermt-8 z-1 mt-16">
+            <input
+              type="text"
+              placeholder="Search..."
+              class="w-1/4 h-6 p-4 border border-transparent bg-gray-800 text-base font-lato outline-none"
+            />
+            <button
+              type="button"
+              class="bg-blue-700 text-white h-[8.3] px-4 font-bold transition-all ease-in-out duration-400 hover:bg-blue-800"
+            >
+              Search
+            </button>
+          </div>
+
+
+          <div id="card-container" th:classappend="${isEmpty ? 'flex items-center justify-center w-full -mt-8' : gridClass}">
+            <!-- Show error message if no student books are available -->
+            <div th:if="${isEmpty}" class="flex flex-col items-center justify-center w-full h-auto">
+                <h1 class="text-white self-center text-base sm:text-base md:text-md lg:text-lg font-semibold whitespace-nowrap">
+                    No data available
+                </h1>
+            </div>
+         <!-- Loop through the studentBooks list -->
+         <div th:each="student : ${studentBooks}" th:if="${student.booksDetails != null and !#lists.isEmpty(student.booksDetails)}"
+              class="mt-20 flex justify-center">
+             <!-- Loop through the booksDetails for each student -->
+             <div th:each="book : ${student.booksDetails}" 
+                  class="border-2 border-black rounded-lg overflow-hidden bg-black shadow-sm shadow-gray-900 flex flex-col w-36 sm:w-40 md:w-48 lg:w-60">
+                 
+                 <!-- Use a default image or fetch from the book object -->
+                 <img th:src="${book.image != null ? book.image : 'https://i.gr-assets.com/images/S/compressed.photo.goodreads.com/books/1483474406l/3685347.jpg'}" 
+                      alt="Book Image" 
+                      class="rounded-lg w-full h-auto sm:h-auto md:h-auto lg:h-auto object-cover">
+                 
+                 <div class="flex flex-col justify-center items-center p-4">
+                     <!-- Display the book title or default to 'Unknown' if null -->
+                     <div class="text-sm sm:text-sm md:text-md lg:text-lg font-bold mb-2 text-center text-white">
+                         <span th:text="${book.bookName != null ? book.bookName : 'Unknown'}"></span>
+                     </div>
+                     <div class="text-white text-sm text-center sm:text-sm md:text-md lg:text-lg">
+                         <!-- Display the student name or default to 'Anonymous' if null -->
+                         <div class="font-semibold mb-1 text-white">
+                             <span th:text="${student.name != null ? student.name : 'Anonymous'}"></span>
+                         </div>
+                         <!-- Display the issue date or show 'Not Issued' if null -->
+                         <div class="text-white">
+                             <span th:text="${book.returnDate != null ? book.returnDate : 'Not Issued'}"></span>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+         </div>
+     </div>
+     
+             
+    </body>
+</html>

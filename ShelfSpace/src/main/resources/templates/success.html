@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Password Change Notification</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(to right, #f953c6, #b91d73);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .notification-container {
+            background: #fff;
+            padding: 2em;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            width: 400px;
+            text-align: center;
+        }
+        .notification-container h2 {
+            margin-bottom: 1em;
+            color: #b91d73;
+        }
+        .notification-container p {
+            color: #333;
+            font-size: 1.2em;
+        }
+        .notification-container .btn {
+            background: #b91d73;
+            color: #fff;
+            border: none;
+            padding: 0.75em 1.5em;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background 0.3s;
+        }
+        .notification-container .btn:hover {
+            background: #8e1558;
+        }
+    </style>
+</head>
+<body>
+    <div class="container notification-container">
+        <h2>Password Change</h2>
+        <p th:text="'Hello, ' + ${userName} + '! Your password is being changed.'"></p>
+        <a href="/" class="btn">Go to Home</a>
+    </div>
+</body>
+</html>

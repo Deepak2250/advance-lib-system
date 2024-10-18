@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <title>Update Student</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 p-6">
+    <div class="max-w-md mx-auto bg-white p-6 rounded-lg shadow-lg">
+        <h2 class="text-2xl font-semibold text-gray-700 text-center mb-4">Update Student</h2>
+
+        <form method="post" th:action="@{/admin/updatestudent}" th:object="${studentDetails}" class="max-w-lg mx-auto p-6 bg-white rounded-lg shadow-md">
+            <!-- Roll Number (hidden) -->
+            <input type="hidden" name="roll_no" th:value="${roll_no}">
+            
+            <!-- Book ID (hidden) -->
+            <input type="hidden" name="bookId" th:value="${bookId}">
+        
+            <!-- Name Input -->
+            <div class="mb-4">
+                <label for="name" class="block text-gray-700 font-bold mb-2">Name:</label>
+                <input type="text" name="name" 
+                       th:value="${studentDetails.name}"  
+                       class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                <div th:if="${#fields.hasErrors('name')}" 
+                     th:errors="*{name}" 
+                     class="text-red-500 mt-2 text-sm"></div>
+            </div>
+
+            <!-- Email Input -->
+            <div class="mb-4">
+                <label for="email" class="block text-gray-700 font-bold mb-2">Email:</label>
+                <input type="email" name="email" 
+                       th:value="${studentDetails.email}" 
+                       class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                <div th:if="${#fields.hasErrors('email')}" 
+                     th:errors="*{email}" 
+                     class="text-red-500 mt-2 text-sm"></div>
+            </div>
+
+             <!-- Display Email Error -->
+             <div th:if="${emailError}" class="text-red-500 mt-2 text-sm">
+                <p th:text="${emailError}"></p>
+            </div>
+        
+            <!-- Return Date Input -->
+            <div class="mb-4">
+                <label for="returnDate" class="block text-gray-700 font-bold mb-2">
+                    Return Date (MM/dd/yyyy hh:mm AM/PM):
+                </label>
+                <input type="datetime-local" name="returnDate" 
+                       th:value="${studentDetails.returnDate}" 
+                       placeholder="MM/dd/yyyy hh:mm AM/PM" 
+                       class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                <div th:if="${#fields.hasErrors('returnDate')}" 
+                     th:errors="*{returnDate}" 
+                     class="text-red-500 mt-2 text-sm"></div>
+            </div>
+        
+            <!-- Submit Button -->
+            <button type="submit" 
+                    class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                Update
+            </button>
+        </form>
+        
+    </div>
+</body>
+</html>
