@@ -1,7 +1,10 @@
 package com.ShelfSpace.ShelfSpace.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+
+import javax.management.RuntimeErrorException;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,6 +17,7 @@ import com.ShelfSpace.ShelfSpace.Dto.StudentDetailsDtoMapper;
 import com.ShelfSpace.ShelfSpace.entites.BooksDetails;
 import com.ShelfSpace.ShelfSpace.entites.StudentDetails;
 import com.ShelfSpace.ShelfSpace.exception.BookAlreadyExist;
+import com.ShelfSpace.ShelfSpace.exception.EmailAlreadyExistsException;
 import com.ShelfSpace.ShelfSpace.exception.ResourceNotFoundException;
 import com.ShelfSpace.ShelfSpace.exception.StudentNotFound;
 import com.ShelfSpace.ShelfSpace.model.GoogleResponsePojo;
@@ -197,22 +201,31 @@ public class StudentDetailsService implements ServiceDao {
 	}
 
 	@Override
-	public void updateStudentNameAndReturnDate(Long roll_no, Long bookId, String name, String returnDate) {
+	public void updateStudentNameAndReturnDate(Long roll_no, Long bookId, String name, String email,
+			String returnDate) {
+
+		log.info("Updating student with roll_no: {}, bookId: {}, name: {}, returnDate: {}", roll_no, bookId, name,
+				returnDate);
 		StudentDetails studentDetails = detailsRepository.findById(roll_no)
 				.orElseThrow(() -> new StudentNotFound("No Student With this Name"));
 
 		BooksDetails booksDetails = bookDetailsRepository.findById(bookId)
 				.orElseThrow(() -> new ResourceNotFoundException("No Book With this id founded"));
 
-		System.out.println("Roll No: " + roll_no);
-		System.out.println("Book ID: " + bookId);
-		System.out.println("Name: " + name);
-		System.out.println("Return Date: " + returnDate);
+		Optional<StudentDetails> existingEmail = detailsRepository.findByEmail(email);
+
+		if (existingEmail.isPresent()) {
+			if (existingEmail.get().getEmail() != null && !existingEmail.get().getRoll_no().equals(roll_no)) {
+				throw new EmailAlreadyExistsException("The email is already assigned to another student.");
+			}
+		}
 
 		studentDetails.setName(name);
+		studentDetails.setEmail(email);
 		booksDetails.setReturnDate(LocalDateTime.parse(returnDate));
 		detailsRepository.save(studentDetails);
 		bookDetailsRepository.save(booksDetails);
+		log.info("Successfully updated student with roll_no: {} and bookId: {}", roll_no, bookId);
 
 	}
 }

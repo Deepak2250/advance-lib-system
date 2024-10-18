@@ -34,7 +34,7 @@ public class StudentDetails {
 	@Column(nullable = false)
 	private Long phoneNumber;
 
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonManagedReference
 	private List<BooksDetails> booksDetails;
 

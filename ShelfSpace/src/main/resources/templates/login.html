@@ -6,6 +6,7 @@
     <!-- Bootstrap CSS (example) -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link th:href="@{/css/login.css}" rel="stylesheet" type="text/css" />
+    <link th:href="@{/css/output.css}" rel="stylesheet" type="text/css" />
 </head>
 <body>
     <div class="container login-container">
@@ -13,7 +14,7 @@
         <div th:if="${error}" class="error-message">
             <p th:text="${error}"></p>
         </div>
-        <form th:action="@{/login}" method="post" class="login-form">
+        <form th:action="@{/LoginPage}" method="post" class="login-form">
             <div class="form-group">
                 <input type="email" name="email" class="form-control" placeholder="Email" required>
             </div>
@@ -25,7 +26,7 @@
         <p class="forgot-password-link">
             <a th:href="@{/forgot-password/email-Verification}">Forgot Password?</a>
         </p>
-        <p class="text-center">Don't have an account? <a th:href="@{/css/signup}">Register</a></p>
+        <p class="text-center">Don't have an account? <a th:href="@{/signup}">Register</a></p>
     </div>
 </body>
 </html>

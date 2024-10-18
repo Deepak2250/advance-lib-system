@@ -1,5 +1,6 @@
 package com.servicedao;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -31,5 +32,6 @@ public interface ServiceDao {
 
 	Optional<BooksDetails> addBooks(BooksDetailsDto booksDetailsDto, Long roll_no);
 
-	void updateStudentNameAndReturnDate(Long roll_no, Long bookId, String name, String returnDate);
+	void updateStudentNameAndReturnDate(Long roll_no, Long bookId, String name, String email, String returnDate);
+
 }

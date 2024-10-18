@@ -37,7 +37,8 @@ public class SecurityConfiguration {
                                                                 "/css/login.css", "/css/resetpassword.css",
                                                                 "/js/home.js",
                                                                 "/api/**", "/error", "/admin/**", "/output.css",
-                                                                "/input.css")
+                                                                "/input.css", "/images/No image.jpg", "/viewmore/**",
+                                                                "/issuedbook")
                                                 .permitAll()
                                                 .anyRequest().authenticated())
 

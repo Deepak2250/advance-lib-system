@@ -1,6 +1,7 @@
 package com.ShelfSpace.ShelfSpace.Dto;
 
 import java.time.LocalDateTime;
+
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,6 +23,7 @@ public class BooksDetailsDto {
     @NotNull(message = "The Return date Cant be null")
     private LocalDateTime returnDate;
 
+    private LocalDateTime issueDateTime;
     private String subtitle;
     private String authors;
     private String publishedDate;

@@ -102,6 +102,8 @@ function displayStudents(students) {
     const container = document.getElementById('card-container');
     let cardsHTML = '';
     const image = "/images/No image.jpg"; // Adjusted path
+    console.log(students.length);
+    
 
     if (!students || students.length === 0) {
         container.innerHTML = `

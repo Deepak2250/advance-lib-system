@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Student Form</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="input.css">
+    <link rel="stylesheet" href="output.css">
+</head>
+<body class="bg-zinc-900 flex items-center justify-center h-auto">
+    <div class="w-full max-w-3xl p-6 bg-zinc-900 rounded-lg shadow-lg border-2 border-black ">
+        <h1 class="text-3xl font-bold mb-6 text-center font-kanit text-yellow-500">Student Form</h1>
+        <form th:action="@{/admin/processcreateuser}" th:object="${studentsDetails}" method="post">
+            <div class="mb-4">
+                <label for="name" class="block text-white text-sm font-bold mb-2">Name</label>
+                <input type="text" name="name" class="bg-zinc-800  shadow appearance-none border-2 border-black rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" th:field="*{name}" />
+                <p class="text-red-500 text-xs italic" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Name Error</p>
+            </div>
+
+            <div class="mb-4">
+                <label for="roll_no" class="block text-white text-sm font-bold mb-2">Roll Number</label>
+                <input type="number" name="roll_no" class="bg-zinc-800  shadow appearance-none border-2 border-black rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" th:field="*{roll_no}" />
+                <p class="text-red-500 text-xs italic" th:if="${#fields.hasErrors('roll_no')}" th:errors="*{roll_no}">Roll_No Error</p>
+            </div>
+            
+            <div class="mb-4">
+                <label for="email" class="block text-white text-sm font-bold mb-2">Email</label>
+                <input type="email" name="email" class="bg-zinc-800 shadow appearance-none border-2 border-black rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" th:field="*{email}" />
+                <p class="text-red-500 text-xs italic" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Email Error</p>
+            </div>
+            
+            <div class="mb-4">
+                <label for="phoneNumber" class="block text-white text-sm font-bold mb-2">Phone Number</label>
+                <input type="text" name="phoneNumber" class="bg-zinc-800  shadow appearance-none border-2 border-black rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" th:field="*{phoneNumber}" />
+                <p class="text-red-500 text-xs italic" th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}">Phone Number Error</p>
+            </div>
+
+            <div class="mb-4">
+                <label for="bookId" class="block text-white text-sm font-bold mb-2">Book Id</label>
+                <input type="number" name="booksDetails[0].bookId" class="bg-zinc-800 shadow appearance-none border-2 border-black rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" th:field="*{booksDetails[0].bookId}" />
+                <p class="text-red-500 text-xs italic" th:if="${#fields.hasErrors('booksDetails[0].bookId')}" th:errors="*{booksDetails[0].bookId}">Book Id Error</p>
+            </div>
+
+            <div class="mb-4">
+                <label for="bookName" class="block text-white text-sm font-bold mb-2">Book Name</label>
+                <input type="text" name="booksDetails[0].bookName" class="bg-zinc-800 shadow appearance-none border-2 border-black rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" th:field="*{booksDetails[0].bookName}" />
+                <p class="text-red-500 text-xs italic" th:if="${#fields.hasErrors('booksDetails[0].bookName')}" th:errors="*{booksDetails[0].bookName}">Book Name Error</p>
+            </div>
+
+            <div class="mb-4">
+                <label for="returnDate" class="block text-white text-sm font-bold mb-2">Return Date</label>
+                <input type="datetime-local" name="booksDetails[0].returnDate" class="bg-zinc-800 shadow appearance-none border-2 border-black rounded w-full py-2 px-3 text-gray-400 leading-tight focus:outline-none focus:shadow-outline" th:field="*{booksDetails[0].returnDate}" />
+                <p class="text-red-500 text-xs italic" th:if="${#fields.hasErrors('booksDetails[0].returnDate')}" th:errors="*{booksDetails[0].returnDate}">Return Date Error</p>
+            </div>
+
+            <div class="flex items-center justify-between">
+                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Save</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

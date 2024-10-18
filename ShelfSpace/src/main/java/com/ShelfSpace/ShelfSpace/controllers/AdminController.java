@@ -16,6 +16,7 @@ import com.ShelfSpace.ShelfSpace.Dto.StudentDetailUpdate;
 import com.ShelfSpace.ShelfSpace.Dto.StudentDetailsDto;
 import com.ShelfSpace.ShelfSpace.Dto.StudentDetailsDtoMapper;
 import com.ShelfSpace.ShelfSpace.entites.StudentDetails;
+import com.ShelfSpace.ShelfSpace.exception.EmailAlreadyExistsException;
 import com.ShelfSpace.ShelfSpace.exception.ResourceNotFoundException;
 import com.ShelfSpace.ShelfSpace.exception.StudentNotFound;
 import com.ShelfSpace.ShelfSpace.service.StudentDetailsService;
@@ -88,6 +89,7 @@ public class AdminController {
 
     @GetMapping("/edit")
     public String getUpdateStudent(@RequestParam Long roll_no, @RequestParam Long bookId, Model model) {
+        log.info("Received roll_no: {}, bookId: {}", roll_no, bookId);
         StudentDetailUpdate studentDetailUpdate = new StudentDetailUpdate();
         model.addAttribute("roll_no", roll_no);
         model.addAttribute("bookId", bookId);
@@ -99,20 +101,30 @@ public class AdminController {
     public String updateStudent(@Valid @ModelAttribute("studentDetails") StudentDetailUpdate studentDetailUpdate,
             BindingResult result, Model model) {
 
+        log.info("Updating student with roll_no: {}, bookId: {}", studentDetailUpdate.getRoll_no(),
+                studentDetailUpdate.getBookId());
+
         if (result.hasErrors()) {
             return "updatestudent";
         }
 
         try {
             studentDetailsService.updateStudentNameAndReturnDate(studentDetailUpdate.getRoll_no(),
-                    studentDetailUpdate.getBookId(), studentDetailUpdate.getName(),
+                    studentDetailUpdate.getBookId(), studentDetailUpdate.getName(), studentDetailUpdate.getEmail(),
                     studentDetailUpdate.getReturnDate());
 
-            return "redirect:/viewmore";
+            return "redirect:/viewmore?roll_no=" + studentDetailUpdate.getRoll_no();
 
-        } catch (StudentNotFound | ResourceNotFoundException e) {
-            return "updatestudent";
+        }
+
+        catch (EmailAlreadyExistsException e) {
+            model.addAttribute("emailError", e.getMessage());
+            return "updateStudent";
+
+        }
+
+        catch (StudentNotFound | ResourceNotFoundException e) {
+            return "rediect:/updatestudent";
         }
     }
-
 }

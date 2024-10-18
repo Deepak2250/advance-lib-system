@@ -3,8 +3,10 @@ package com.ShelfSpace.ShelfSpace.controllers;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -15,13 +17,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.ResourceAccessException;
 
+import com.ShelfSpace.ShelfSpace.Dto.BooksDetailsDto;
 import com.ShelfSpace.ShelfSpace.Dto.StudentDetailsDto;
 import com.ShelfSpace.ShelfSpace.Dto.StudentDetailsDtoMapper;
 import com.ShelfSpace.ShelfSpace.entites.BooksDetails;
 import com.ShelfSpace.ShelfSpace.entites.StudentDetails;
-import com.ShelfSpace.ShelfSpace.repository.BookDetailsRepository;
+import com.ShelfSpace.ShelfSpace.model.StudentResponse;
 import com.ShelfSpace.ShelfSpace.service.StudentDetailsService;
 
 @RestController
@@ -31,25 +36,31 @@ public class RestApplication {
 
 	@Autowired
 	private StudentDetailsService detailsService;
-	@Autowired
-	private BookDetailsRepository booksRepositrory;
 
 	//// Get All The Students
 
 	@GetMapping("/getAllStudents")
-	public ResponseEntity<List<StudentDetailsDto>> getAllStudents() {
-		Iterable<StudentDetails> studentDetailsIt = detailsService.getAllStudent();
-		List<StudentDetailsDto> studentDetailsList = new ArrayList<>();
+	public ResponseEntity<StudentResponse> getAllStudents(
+			@RequestParam(value = "pageSize", defaultValue = "12", required = false) Integer pageSize,
+			@RequestParam(value = "pageNumber", defaultValue = "1", required = false) Integer pageNumber) {
 
-		studentDetailsIt.forEach(studentDetails -> {
-			studentDetailsList.add(StudentDetailsDtoMapper.toDto(studentDetails));
-		});
+		StudentResponse studentResponse = new StudentResponse();
 
-		if (studentDetailsList.isEmpty()) {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		Optional<Page<StudentDetails>> studentDetailsIt = detailsService.getAllStudent(pageSize, pageNumber);
+
+		if (studentDetailsIt.isPresent()) {
+			List<StudentDetailsDto> detailsDtos = studentDetailsIt.get().getContent()
+					.stream()
+					.map(details -> StudentDetailsDtoMapper.toDto(details))
+					.collect(Collectors.toList());
+
+			studentResponse.setStudentDetails(detailsDtos);
+			studentResponse.setHasMore(studentDetailsIt.get().hasNext()); // Check if there's a next page
+		} else {
+			studentResponse.setStudentDetails(new ArrayList<>());
+			studentResponse.setHasMore(false);
 		}
-		return new ResponseEntity<>(studentDetailsList, HttpStatus.OK);
-
+		return new ResponseEntity<>(studentResponse, HttpStatus.OK);
 	}
 
 	/// Adding The Students
@@ -57,12 +68,16 @@ public class RestApplication {
 	@PostMapping("/addStudent")
 	public ResponseEntity<StudentDetails> addUser(@RequestBody StudentDetailsDto studentDetailsDto) {
 
-		StudentDetails studentDetails = StudentDetailsDtoMapper.toEntity(studentDetailsDto);
-		Optional<StudentDetails> optional = detailsService.saveStudentDetails(studentDetails);
-		if (optional.isPresent()) {
-			return new ResponseEntity<>(optional.get(), HttpStatus.CREATED);
-		} else {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		try {
+			StudentDetails studentDetails = StudentDetailsDtoMapper.toEntity(studentDetailsDto);
+			Optional<StudentDetails> optional = detailsService.saveStudentDetails(studentDetails);
+			if (optional.isPresent()) {
+				return new ResponseEntity<>(optional.get(), HttpStatus.CREATED);
+			} else {
+				return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		} catch (ResourceAccessException ex) {
+			throw new ResourceAccessException("Failed to access Exteranl Api : " + ex.getMessage());
 		}
 	}
 
@@ -89,9 +104,9 @@ public class RestApplication {
 
 	/// Delete Only The Book Issued By the Student
 
-	@DeleteMapping("/deleteBook/{book_id}")
-	public ResponseEntity<BooksDetails> deleteBookDetails(@PathVariable Long book_id) {
-		Optional<BooksDetails> optional = detailsService.deleteStudentBooks(book_id);
+	@DeleteMapping("/deleteBook")
+	public ResponseEntity<BooksDetails> deleteBookDetails(@RequestParam Long roll_no, Long book_id) {
+		Optional<BooksDetails> optional = detailsService.deleteStudentBooks(roll_no, book_id);
 		return optional.map(book -> ResponseEntity.ok(book)).orElse(ResponseEntity.notFound().build());
 	}
 
@@ -106,39 +121,39 @@ public class RestApplication {
 	/// get The Student by passing its roll_no
 
 	@GetMapping("/getStudent/{roll_no}")
-	public ResponseEntity<StudentDetails> getStudentById(@PathVariable Long roll_no) {
-		Optional<StudentDetails> studentRollNo = detailsService.getStudentById(roll_no);
+	public ResponseEntity<StudentDetailsDto> getStudentById(@PathVariable Long roll_no) {
+		Optional<StudentDetailsDto> studentRollNo = detailsService.getStudentDetailsDtoById(roll_no);
 		System.out.println("Your Dad Is here bitches " + studentRollNo.get());
 		return studentRollNo.map(student -> ResponseEntity.ok(student)).orElse(ResponseEntity.notFound().build());
 	}
 
 	/// get All The books
 
-	@GetMapping("/getAllBooks")
-	public ResponseEntity<List<BooksDetails>> getAllBooks() {
-		Iterable<BooksDetails> allBooks = detailsService.getAllBooks();
-		List<BooksDetails> allBooksList = new ArrayList<BooksDetails>();
-		allBooks.forEach(allBooksList::add);
-		if (allBooksList.isEmpty()) {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
-		return new ResponseEntity<>(allBooksList, HttpStatus.OK);
+	// @GetMapping("/getAllBooks")
+	// public ResponseEntity<List<BooksDetails>> getAllBooks() {
+	// // Iterable<BooksDetails> allBooks = detailsService.getAllBooks();
+	// List<BooksDetails> allBooksList = new ArrayList<BooksDetails>();
+	// allBooks.forEach(allBooksList::add);
+	// if (allBooksList.isEmpty()) {
+	// return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	// }
+	// return new ResponseEntity<>(allBooksList, HttpStatus.OK);
 
-	}
+	// }
 
 	/// Add The books to the particular student
 
 	@PostMapping("/addBook/{roll_no}")
-	public ResponseEntity<?> addBooksToStudent(@RequestBody BooksDetails booksDetails, @PathVariable Long roll_no) {
-		Optional<BooksDetails> existingBook = booksRepositrory.findByBookId(booksDetails.getBookId());
-		if (existingBook.isPresent()) {
-			// Book is already issued, return a specific conflict response
-			return ResponseEntity.status(HttpStatus.CONFLICT)
-					.body("The book with ID " + booksDetails.getBookId() + " is already issued to the student.");
+	public ResponseEntity<?> addBooksToStudent(@RequestBody BooksDetailsDto booksDetailsDto,
+			@PathVariable Long roll_no) {
+
+		Optional<BooksDetails> studentBook = detailsService.addBooks(booksDetailsDto, roll_no);
+		if (studentBook.isPresent()) {
+			return ResponseEntity.ok(studentBook.get()); // Return the added book
+		} else {
+			return ResponseEntity.badRequest().build(); // Return a 400 Bad Request if the book could not be added
 		}
-		Optional<BooksDetails> studentBook = detailsService.addBooks(booksDetails, roll_no);
-		return studentBook.map(studentBooks -> ResponseEntity.ok(studentBooks))
-				.orElse(ResponseEntity.badRequest().build());
+
 	}
 
 }
